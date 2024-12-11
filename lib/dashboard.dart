@@ -54,14 +54,14 @@ class CircularButton extends StatelessWidget {
   }
 }
 
-class ViewScreen extends StatefulWidget {
-  const ViewScreen({super.key});
+class StudyMaterialDashboard extends StatefulWidget {
+  const StudyMaterialDashboard({super.key});
 
   @override
-  State<ViewScreen> createState() => _ViewScreenState();
+  State<StudyMaterialDashboard> createState() => _StudyMaterialDashboardState();
 }
 
-class _ViewScreenState extends State<ViewScreen> {
+class _StudyMaterialDashboardState extends State<StudyMaterialDashboard> {
   // List of button labels
   final List<String> buttonLabels = [
     "Study Materials",
