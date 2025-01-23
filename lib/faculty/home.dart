@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class FacultyHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,24 +35,28 @@ class HomeScreen extends StatelessWidget {
                       SizedBox(height: 50),
                       // Carousel/Banner Section
                       CarouselSlider(
-   items: [Image.network('https://media-maa2-2.cdn.whatsapp.net/v/t61.24694-24/459154861_1732672164164868_2606461703360904944_n.jpg?ccb=11-4&oh=01_Q5AaIAyP63kKcDFNR8INLmNJoinQ9_rvSoktDI5WVmbFSOV-&oe=6756C09F&_nc_sid=5e03e0&_nc_cat=101'),Text('data1'),Text('data2')],
-   options: CarouselOptions(
-      height: 200,
-      aspectRatio: 16/9,
-      viewportFraction: 0.8,
-      initialPage: 0,
-      enableInfiniteScroll: true,
-      reverse: false,
-      autoPlay: true,
-      autoPlayInterval: Duration(seconds: 3),
-      autoPlayAnimationDuration: Duration(milliseconds: 800),
-      autoPlayCurve: Curves.fastOutSlowIn,
-      enlargeCenterPage: true,
-      enlargeFactor: 0.3,
-      // onPageChanged: callbackFunction,
-      scrollDirection: Axis.horizontal,
-   )
- ),
+                          items: [
+                            Image.asset("assets/download1.jfif"),
+                     Image.asset("assets/download1.jfif"),
+                     
+                          ],
+                          options: CarouselOptions(
+                            height: 200,
+                            aspectRatio: 16 / 9,
+                            viewportFraction: 0.8,
+                            initialPage: 0,
+                            enableInfiniteScroll: true,
+                            reverse: false,
+                            autoPlay: true,
+                            autoPlayInterval: Duration(seconds: 3),
+                            autoPlayAnimationDuration:
+                                Duration(milliseconds: 800),
+                            autoPlayCurve: Curves.fastOutSlowIn,
+                            enlargeCenterPage: true,
+                            enlargeFactor: 0.3,
+                            // onPageChanged: callbackFunction,
+                            scrollDirection: Axis.horizontal,
+                          )),
                       SizedBox(height: 16),
                       // Student Details Section
                       Container(
@@ -70,19 +74,19 @@ class HomeScreen extends StatelessWidget {
                               children: [
                                 CustomButton(
                                   title: 'STUDENTS VERIFICATION',
-                                  color: const Color.fromARGB(255, 252, 193, 213),
+                                  color:
+                                      const Color.fromARGB(255, 252, 193, 213),
                                 ),
                                 CustomButton(
                                   title: 'UPLOAD AND VIEW',
-                                  color: const Color.fromARGB(255, 252, 193, 213),
+                                  color:
+                                      const Color.fromARGB(255, 252, 193, 213),
                                 ),
                               ],
                             ),
                           ],
                         ),
                       ),
-                
-                      
                     ],
                   ),
                 ),
@@ -144,6 +148,7 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
+
       // bottomNavigationBar: BottomNavigationBar(
       //   currentIndex: 0,
       //   items: [

@@ -1,14 +1,9 @@
+import 'package:checkk/students/services/studentsqp.dart';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:checkk/services/loginAPI.dart';
 
-class ElearningApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: QuestionPaperPage(),
-    );
-  }
-}
+
 
 class QuestionPaperPage extends StatefulWidget {
   @override
@@ -18,7 +13,6 @@ class QuestionPaperPage extends StatefulWidget {
 class _QuestionPaperPageState extends State<QuestionPaperPage> {
   String selectedSemester = 'Semester 1';
   String selectedPaper = 'Paper 111';
-
   List<String> semesters = [
     'Semester 1',
     'Semester 2',
@@ -27,15 +21,16 @@ class _QuestionPaperPageState extends State<QuestionPaperPage> {
     'Semester 5',
     'Semester 6',
   ];
-  List<String> semester1papers = ['Paper 111', 'Paper 2', 'Paper 3'];
-  List<String> semester2papers = ['Paper 1', 'Paper 2', 'Paper 3'];
-  List<String> semester3papers = ['Paper 1', 'Paper 2', 'Paper 3'];
-  List<String> semester4papers = ['Paper 1', 'Paper 2', 'Paper 3'];
-  List<String> semester5papers = ['Paper 1', 'Paper 2', 'Paper 3'];
-  List<String> semester6papers = ['Paper 1', 'Paper 2', 'Paper 3'];
+  
   List<String> selectedPaperList = [];
+  late Future<List<Map<String, dynamic>>> _questionPapers;
 
-  List<String> types = ['Video', 'File'];
+  @override
+  void initState() {
+    super.initState();
+    // Fetch question papers when the page loads
+    _questionPapers = QuestionPaperPageApi();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,25 +65,7 @@ class _QuestionPaperPageState extends State<QuestionPaperPage> {
                         onChanged: (value) {
                           setState(() {
                             selectedSemester = value!;
-                            if (value == 'Semester 1') {
-                              selectedPaperList = semester1papers;
-                              selectedPaper = semester1papers[0]; // Default Paper
-                            } else if (value == 'Semester 2') {
-                              selectedPaperList = semester2papers;
-                              selectedPaper = semester2papers[0]; // Default Paper
-                            } else if (value == 'Semester 3') {
-                              selectedPaperList = semester3papers;
-                              selectedPaper = semester3papers[0]; // Default Paper
-                            } else if (value == 'Semester 4') {
-                              selectedPaperList = semester4papers;
-                              selectedPaper = semester4papers[0]; // Default Paper
-                            } else if (value == 'Semester 5') {
-                              selectedPaperList = semester5papers;
-                              selectedPaper = semester5papers[0]; // Default Paper
-                            } else if (value == 'Semester 6') {
-                              selectedPaperList = semester6papers;
-                              selectedPaper = semester6papers[0]; // Default Paper
-                            }
+                            // You could set the selectedPaperList here based on the selectedSemester.
                           });
                         },
                         decoration: InputDecoration(
@@ -122,24 +99,40 @@ class _QuestionPaperPageState extends State<QuestionPaperPage> {
             ),
           ),
 
-          // Study Materials List
+          // Question Papers List
           Expanded(
-            child: ListView.builder(
-              itemCount: 10, // Example: Replace with dynamic data count
-              itemBuilder: (context, index) {
-                return Card(
-                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  child: ListTile(
-                    leading: Icon(Icons.folder, color: Colors.blue),
-                    title: Text('Question Paper ${index + 1}'),
-                    subtitle: Text(
-                        'Semester: $selectedSemester, Paper: $selectedPaper'),
-                    trailing: Icon(Icons.download),
-                    onTap: () {
-                      // Open or download material
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: _questionPapers,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No question papers available.'));
+                } else {
+                  List<Map<String, dynamic>> questionPapers = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: questionPapers.length,
+                    itemBuilder: (context, index) {
+                      var paper = questionPapers[index];
+                      return Card(
+                        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        child: ListTile(
+                          leading: Icon(Icons.folder, color: Colors.blue),
+                          title: Text('Question Paper ${index + 1}'),
+                          subtitle: Text(
+                            'Semester: ${paper['Semester']}, Paper: ${paper['Paper']}',
+                          ),
+                          trailing: Icon(Icons.download),
+                          onTap: () {
+                            // You can implement onTap to open/download the question paper
+                          },
+                        ),
+                      );
                     },
-                  ),
-                );
+                  );
+                }
               },
             ),
           ),
@@ -148,8 +141,7 @@ class _QuestionPaperPageState extends State<QuestionPaperPage> {
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.notifications), label: 'Notifications'),
+          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Notifications'),
           BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
         ],
       ),

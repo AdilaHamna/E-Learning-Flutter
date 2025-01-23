@@ -1,3 +1,4 @@
+import 'package:checkk/faculty/Login.dart';
 import 'package:flutter/material.dart';
 
 class CustomeDrawer extends StatelessWidget {
@@ -77,7 +78,7 @@ class CustomeDrawer extends StatelessWidget {
               title: const Text('Log Out'),
               onTap: () {
                 // Handle logout functionality
-                Navigator.pop(context);
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login1(),));
               },
             ),
           ),

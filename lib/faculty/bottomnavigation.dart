@@ -1,4 +1,4 @@
-import 'package:checkk/home.dart';
+import 'package:checkk/faculty/home.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavBarScreen extends StatefulWidget {
@@ -14,7 +14,7 @@ class _BottomNavBarScreenState extends State<BottomNavBarScreen> {
 
   // List of screens corresponding to each bottom navigation item
   final List<Widget> _screens = [
-   HomeScreen(),
+   FacultyHomeScreen(),
     Center(child: Text("Notification Screen", style: TextStyle(fontSize: 24))),
     Center(child: Text("Chat Screen", style: TextStyle(fontSize: 24))),
   ];

@@ -1,14 +1,8 @@
+import 'package:checkk/students/services/studentsSYLLABUS.dart';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:checkk/services/loginAPI.dart';
 
-class ElearningApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SyllabusPage(),
-    );
-  }
-}
 
 class SyllabusPage extends StatefulWidget {
   @override
@@ -27,15 +21,16 @@ class _SyllabusPageState extends State<SyllabusPage> {
     'Semester 5',
     'Semester 6',
   ];
-  List<String> semester1papers = ['Paper 111', 'Paper 2', 'Paper 3'];
-  List<String> semester2papers = ['Paper 1', 'Paper 2', 'Paper 3'];
-  List<String> semester3papers = ['Paper 1', 'Paper 2', 'Paper 3'];
-  List<String> semester4papers = ['Paper 1', 'Paper 2', 'Paper 3'];
-  List<String> semester5papers = ['Paper 1', 'Paper 2', 'Paper 3'];
-  List<String> semester6papers = ['Paper 1', 'Paper 2', 'Paper 3'];
-  List<String> selectedPaperList = [];
 
-  List<String> types = ['Video', 'File'];
+  List<String> selectedPaperList = [];
+  late Future<List<Map<String, dynamic>>> _syllabusMaterials;
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch syllabus materials from the API when the page is loaded
+    _syllabusMaterials = SyllabusPageApi();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,25 +65,7 @@ class _SyllabusPageState extends State<SyllabusPage> {
                         onChanged: (value) {
                           setState(() {
                             selectedSemester = value!;
-                            if (value == 'Semester 1') {
-                              selectedPaperList = semester1papers;
-                              selectedPaper = semester1papers[0]; // Default Paper
-                            } else if (value == 'Semester 2') {
-                              selectedPaperList = semester2papers;
-                              selectedPaper = semester2papers[0]; // Default Paper
-                            } else if (value == 'Semester 3') {
-                              selectedPaperList = semester3papers;
-                              selectedPaper = semester3papers[0]; // Default Paper
-                            } else if (value == 'Semester 4') {
-                              selectedPaperList = semester4papers;
-                              selectedPaper = semester4papers[0]; // Default Paper
-                            } else if (value == 'Semester 5') {
-                              selectedPaperList = semester5papers;
-                              selectedPaper = semester5papers[0]; // Default Paper
-                            } else if (value == 'Semester 6') {
-                              selectedPaperList = semester6papers;
-                              selectedPaper = semester6papers[0]; // Default Paper
-                            }
+                            // Update the selectedPaperList based on the selected semester
                           });
                         },
                         decoration: InputDecoration(
@@ -124,22 +101,49 @@ class _SyllabusPageState extends State<SyllabusPage> {
 
           // Study Materials List
           Expanded(
-            child: ListView.builder(
-              itemCount: 10, // Example: Replace with dynamic data count
-              itemBuilder: (context, index) {
-                return Card(
-                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  child: ListTile(
-                    leading: Icon(Icons.folder, color: Colors.blue),
-                    title: Text('Syllabus'),
-                    subtitle: Text(
-                        'Semester: $selectedSemester, Paper: $selectedPaper'),
-                    trailing: Icon(Icons.download),
-                    onTap: () {
-                      // Open or download material
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: _syllabusMaterials,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No syllabus materials available.'));
+                } else {
+                  List<Map<String, dynamic>> syllabusMaterials = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: syllabusMaterials.length,
+                    itemBuilder: (context, index) {
+                      var material = syllabusMaterials[index];
+                      return Card(
+                        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        child: ListTile(
+                          leading: Icon(Icons.folder, color: Colors.blue),
+                          title: Text(material['Paper'] ?? 'No Title'),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Department: ${material['Department'] ?? 'N/A'}'),
+                              Text('Semester: ${material['Semester'] ?? 'N/A'}'),
+                              // Optionally, display the uploadFile and uploadvideo if they exist
+                              if (material['uploadFile'] != null)
+                                Image.network('$baseurl${material['uploadFile']}',
+                                    width: 100, height: 100, fit: BoxFit.cover),
+                              if (material['uploadvideo'] != null)
+                                Image.network('$baseurl${material['uploadvideo']}',
+                                    width: 100, height: 100, fit: BoxFit.cover),
+                            ],
+                          ),
+                          trailing: Icon(Icons.download),
+                          onTap: () {
+                            // Handle onTap event to show more details or start download
+                          },
+                        ),
+                      );
                     },
-                  ),
-                );
+                  );
+                }
               },
             ),
           ),
@@ -148,8 +152,7 @@ class _SyllabusPageState extends State<SyllabusPage> {
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.notifications), label: 'Notifications'),
+          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'Notifications'),
           BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
         ],
       ),
