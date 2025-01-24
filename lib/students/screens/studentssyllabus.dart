@@ -1,8 +1,8 @@
-import 'package:checkk/students/services/studentsSYLLABUS.dart';
-import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
 import 'package:checkk/services/loginAPI.dart';
-
+import 'package:checkk/students/services/studentssyllabus.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'dart:io';
 
 class SyllabusPage extends StatefulWidget {
   @override
@@ -30,6 +30,38 @@ class _SyllabusPageState extends State<SyllabusPage> {
     super.initState();
     // Fetch syllabus materials from the API when the page is loaded
     _syllabusMaterials = SyllabusPageApi();
+  }
+
+  // Method to download the file to the Downloads folder (manually for Windows)
+  Future<void> downloadFile(String fileUrl, String fileName) async {
+    try {
+      // For Windows, manually get the path to the "Downloads" folder
+      String userName = Platform.environment['USERPROFILE']?.split(r'\').last ?? 'User';
+      String downloadsPath = 'C:\\Users\\$userName\\Downloads';
+
+      // Ensure the Downloads folder exists
+      final Directory downloadDir = Directory(downloadsPath);
+      if (!await downloadDir.exists()) {
+        await downloadDir.create(recursive: true);
+      }
+
+      String savePath = '$downloadsPath\\$fileName';
+      
+      // Dio instance to handle file download
+      Dio dio = Dio();
+      
+      // Show a loading indicator
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Downloading...')));
+      
+      // Download the file
+      await dio.download(fileUrl, savePath);
+      
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Download Complete to $savePath')));
+    } catch (e) {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
   }
 
   @override
@@ -101,7 +133,7 @@ class _SyllabusPageState extends State<SyllabusPage> {
 
           // Study Materials List
           Expanded(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
+            child: FutureBuilder<List<Map<String, dynamic>>>(  // Fetch the syllabus data
               future: _syllabusMaterials,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -116,6 +148,9 @@ class _SyllabusPageState extends State<SyllabusPage> {
                     itemCount: syllabusMaterials.length,
                     itemBuilder: (context, index) {
                       var material = syllabusMaterials[index];
+                      String fileUrl = '$baseurl${material['Uploadsyllabus']}';
+                      String fileName = material['Uploadsyllabus'].split('/').last;  // Extract file name from URL
+
                       return Card(
                         margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         child: ListTile(
@@ -126,18 +161,12 @@ class _SyllabusPageState extends State<SyllabusPage> {
                             children: [
                               Text('Department: ${material['Department'] ?? 'N/A'}'),
                               Text('Semester: ${material['Semester'] ?? 'N/A'}'),
-                              // Optionally, display the uploadFile and uploadvideo if they exist
-                              if (material['uploadFile'] != null)
-                                Image.network('$baseurl${material['uploadFile']}',
-                                    width: 100, height: 100, fit: BoxFit.cover),
-                              if (material['uploadvideo'] != null)
-                                Image.network('$baseurl${material['uploadvideo']}',
-                                    width: 100, height: 100, fit: BoxFit.cover),
                             ],
                           ),
                           trailing: Icon(Icons.download),
                           onTap: () {
-                            // Handle onTap event to show more details or start download
+                            // Trigger file download
+                            downloadFile(fileUrl, fileName);
                           },
                         ),
                       );

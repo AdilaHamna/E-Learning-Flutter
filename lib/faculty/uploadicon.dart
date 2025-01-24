@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
-
+import 'package:checkk/faculty/addassignment.dart';
+import 'package:checkk/faculty/addqp.dart';
+import 'package:checkk/faculty/addstudymaterial.dart';
 import 'package:flutter/material.dart';
 
 class CircularButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
-  final  icon;
+  final IconData icon;
 
   const CircularButton({
     super.key,
@@ -35,23 +36,23 @@ class CircularButton extends StatelessWidget {
               ],
             ),
             alignment: Alignment.center,
-           child: Icon(icon),
+            child: Icon(icon),
           ),
-           Center(
-             child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.white, // Text color
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
+          Center(
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white, // Text color
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
               ),
-           ),
+            ),
+          ),
         ],
       ),
     );
-  } 
+  }
 }
 
 class ViewScreen extends StatefulWidget {
@@ -102,8 +103,11 @@ class _ViewScreenState extends State<ViewScreen> {
                       icon: Icons.home,
                       label: buttonLabels[0],
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("${buttonLabels[0]} tapped!")),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddStudyMaterial(),
+                          ),
                         );
                       },
                     ),
@@ -111,26 +115,29 @@ class _ViewScreenState extends State<ViewScreen> {
                       icon: Icons.question_mark_rounded,
                       label: buttonLabels[1],
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("${buttonLabels[1]} tapped!")),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => QuestionPaperView(),
+                          ),
                         );
                       },
                     ),
                   ],
                 ),
-            
-                const SizedBox(height: 20), // Spacing between rows\
-            
+                const SizedBox(height: 20), // Spacing between rows
                 CircularButton(
                   icon: Icons.home,
                   label: buttonLabels[4],
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("${buttonLabels[2]} tapped!")),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => MCQScreen(),
+                    //   ),
+                    // );
                   },
                 ),
-            
                 const SizedBox(height: 20), // Spacing between rows
                 // Second Row
                 Row(
@@ -140,8 +147,11 @@ class _ViewScreenState extends State<ViewScreen> {
                       icon: Icons.assignment,
                       label: buttonLabels[2],
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("${buttonLabels[2]} tapped!")),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UploadAssignment(),
+                          ),
                         );
                       },
                     ),
@@ -149,8 +159,11 @@ class _ViewScreenState extends State<ViewScreen> {
                       icon: Icons.file_copy,
                       label: buttonLabels[3],
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("${buttonLabels[3]} tapped!")),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UploadAssignment(),
+                          ),
                         );
                       },
                     ),
@@ -164,3 +177,20 @@ class _ViewScreenState extends State<ViewScreen> {
     );
   }
 }
+
+// Example Screens to Navigate to
+
+class StudyMaterialsScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Study Materials'),
+      ),
+      body: Center(
+        child: Text('Study Materials Screen'),
+      ),
+    );
+  }
+}
+

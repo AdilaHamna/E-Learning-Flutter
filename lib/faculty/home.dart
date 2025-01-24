@@ -1,5 +1,8 @@
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:checkk/faculty/studentverification.dart';
+import 'package:checkk/faculty/uploadicon.dart';
+import 'package:checkk/services/studentgetApi.dart';
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class FacultyHomeScreen extends StatelessWidget {
   @override
@@ -37,8 +40,7 @@ class FacultyHomeScreen extends StatelessWidget {
                       CarouselSlider(
                           items: [
                             Image.asset("assets/download1.jfif"),
-                     Image.asset("assets/download1.jfif"),
-                     
+                            Image.asset("assets/download1.jfif"),
                           ],
                           options: CarouselOptions(
                             height: 200,
@@ -54,7 +56,6 @@ class FacultyHomeScreen extends StatelessWidget {
                             autoPlayCurve: Curves.fastOutSlowIn,
                             enlargeCenterPage: true,
                             enlargeFactor: 0.3,
-                            // onPageChanged: callbackFunction,
                             scrollDirection: Axis.horizontal,
                           )),
                       SizedBox(height: 16),
@@ -74,13 +75,28 @@ class FacultyHomeScreen extends StatelessWidget {
                               children: [
                                 CustomButton(
                                   title: 'STUDENTS VERIFICATION',
-                                  color:
-                                      const Color.fromARGB(255, 252, 193, 213),
+                                  color: const Color.fromARGB(255, 252, 193, 213),
+                                  onPressed: () {
+                                    getstudentProfileAPI();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              StudentTableScreen()),
+                                    );
+                                  },
                                 ),
                                 CustomButton(
                                   title: 'UPLOAD AND VIEW',
-                                  color:
-                                      const Color.fromARGB(255, 252, 193, 213),
+                                  color: const Color.fromARGB(255, 252, 193, 213),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ViewScreen()),
+                                    );
+                                  },
                                 ),
                               ],
                             ),
@@ -148,17 +164,6 @@ class FacultyHomeScreen extends StatelessWidget {
           ],
         ),
       ),
-
-      // bottomNavigationBar: BottomNavigationBar(
-      //   currentIndex: 0,
-      //   items: [
-      //     BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-      //     BottomNavigationBarItem(
-      //         icon: Icon(Icons.notifications), label: "Notification"),
-      //     BottomNavigationBarItem(
-      //         icon: Icon(Icons.account_circle), label: "Account"),
-      //   ],
-      // ),
     );
   }
 }
@@ -166,8 +171,9 @@ class FacultyHomeScreen extends StatelessWidget {
 class CustomButton extends StatelessWidget {
   final String title;
   final Color color;
+  final VoidCallback onPressed;
 
-  CustomButton({required this.title, required this.color});
+  CustomButton({required this.title, required this.color, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +185,7 @@ class CustomButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: TextButton(
-        onPressed: () {},
+        onPressed: onPressed,
         child: Text(
           title,
           textAlign: TextAlign.center,

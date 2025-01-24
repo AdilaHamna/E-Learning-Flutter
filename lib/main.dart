@@ -14,7 +14,7 @@ import 'package:checkk/container.dart';
 import 'package:checkk/faculty/home.dart';
 import 'package:checkk/faculty/login.dart';
 import 'package:checkk/row.dart';
-import 'package:checkk/students/studdentslogin.dart';
+
 import 'package:checkk/students/screens/studentregistration.dart';
 import 'package:checkk/students/screens/studentsassignment.dart';
 import 'package:checkk/students/screens/studentshome.dart';
@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(debugShowCheckedModeBanner: false,
      
       home: 
-    FacultyHomeScreen()
+Login1(),
     // RegistrationPage(),
     // HomePage(),
     // StudyMaterialsPage(),

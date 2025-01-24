@@ -9,10 +9,10 @@ Map<String, dynamic> profileData = {};
 
 final dio = Dio();
 
-Future<List<dynamic>> getProfileAPI() async {
+Future<List<dynamic>> getstudentProfileAPI() async {
   try {
     Response response = await dio.get(
-      '$baseurl/viewstudent/$lid',
+      '$baseurl/viewstudent_api',
     );
     print(response);
     print(response.statusCode);

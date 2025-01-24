@@ -34,31 +34,31 @@ Future<void> loginApi(
     loginStatus = data['message'] ?? 'failed';
 
     if (statusCode == 200 && loginStatus == 'success') {
-      userType = data['type'];
+      userType = data['user_type'];
       lid = data['login_id'];
       await getProfileAPI();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (ctxt) =>StudentHomePage()));
       // // Navigate based on userType
-      // if (userType == 'admin') {
-      //   // Navigator.pushReplacement(
-      //   //   context,
-      //   //   MaterialPageRoute(builder: (ctx) => AdminHomePage()),
-      //   // );
-      // } else if (userType == 'user') {
-      //   // Navigator.pushReplacement(
-      //   //   context,
-      //   //   MaterialPageRoute(builder: (ctx) => UserHomePage()),
-      //   // );
-      // } else if (userType == 'doctor') {
-      //   // Navigator.pushReplacement(
-      //   //   context,
-      //   //   MaterialPageRoute(builder: (ctx) => Doctorhomepage()),
-      //   // );
-      // } else {
-      //   // Handle unknown userType
-      //   print('Unknown userType: $userType');
-      // }
+      if (userType == 'FACULTY') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (ctx) => FacultyHomeScreen()),
+        );
+      } else if (userType == 'user') {
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (ctx) => UserHomePage()),
+        // );
+      } else if (userType == 'doctor') {
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (ctx) => Doctorhomepage()),
+        // );
+      } else {
+        // Handle unknown userType
+        print('Unknown userType: $userType');
+      }
     } else {
       print('Login failed: $loginStatus');
       ScaffoldMessenger.of(context).showSnackBar(
